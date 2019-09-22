@@ -24,7 +24,6 @@ app.post('/bikes', bikes.addBike.bind(bikes));
 bikeService.init()
     .then(() => {
         app.listen(port, () => {
-            /* eslint-disable no-console */
             console.log(`application listening on port: ${port}`);
         });
     });
