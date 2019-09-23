@@ -1,4 +1,3 @@
-// 'jquery', 'underscore', 'backbone', =>
 define([
     'jquery',
     'underscore',
@@ -8,12 +7,14 @@ define([
     'collections/bikes',
     'views/bike-list',
     'models/bike',
-    'views/bike-detail'
-], ($, _, Backbone, HeaderView, HomeView, BikeCollection, BikeListView, BikeModel, BikeDetailView) => {
+    'views/bike-detail',
+    'views/bike-add'
+], ($, _, Backbone, HeaderView, HomeView, BikeCollection, BikeListView, BikeModel, BikeDetailView, BikeAddView) => {
     const Router = Backbone.Router.extend({
       	routes: {
             '': 'home',
             'bikes': 'listBikes',
+            'bikes/add': 'addBike',
             'bikes/:id': 'getBike'
         },
 
@@ -34,8 +35,16 @@ define([
         },
 
         getBike: function(bikeId) {
+            console.log('get bike called');
             const model = new BikeModel({ _id: bikeId });
             const bikeDetailView = new BikeDetailView({ model });
+            bikeDetailView.render();
+        },
+
+        addBike: function() {
+            console.log('add bike called');
+            const model = new BikeModel();
+            const bikeDetailView = new BikeAddView({ model })
             bikeDetailView.render();
         }
     });

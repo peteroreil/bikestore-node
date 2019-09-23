@@ -56,8 +56,9 @@ function BikeService(mongoConfig) {
     };
 
     this.add = function (bike) {
+        delete bike.base64image;
         return mongoDb.collection('bikes')
-            .insert(bike)
+            .insertOne(bike)
             .then(res => res.ops[0]);
     };
 }

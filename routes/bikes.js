@@ -1,10 +1,11 @@
 'use strict';
 
-function BikeRoutes(bikeService) {
-    this.service = bikeService;
+function BikeRoutes(bikeService, imageService) {
+    this.bikeService = bikeService;
+    this.imageService = imageService;
 
     this.findAll = function (req, res, next) {
-        this.service.findAll()
+        return this.bikeService.findAll()
             .then((all) => {
                 const status = all.length ? 200 : 404;
                 return res.status(status).json(all);
@@ -12,7 +13,7 @@ function BikeRoutes(bikeService) {
     };
 
     this.findById = function (req, res, next) {
-        return this.service.findById(req.params.id)
+        return this.bikeService.findById(req.params.id)
             .then((bike) => {
                 const status = bike ? 200 : 404;
                 return res.status(status).json(bike);
@@ -20,7 +21,7 @@ function BikeRoutes(bikeService) {
     };
 
     this.deleteBike = function (req, res, next) {
-        return this.service.deleteById(req.params.id)
+        return this.bikeService.deleteById(req.params.id)
             .then(() => res.status(204).send())
             .catch(next);
     };
@@ -29,14 +30,18 @@ function BikeRoutes(bikeService) {
         const bike = req.body;
         /* eslint-disable no-underscore-dangle */
         delete bike._id;
-        return this.service.update(req.params.id, bike)
+        return this.bikeService.update(req.params.id, bike)
             .then(updatedBike => res.status(200).json(updatedBike))
             .catch(next);
     };
 
     this.addBike = function (req, res, next) {
         const bike = req.body;
-        return this.service.add(bike)
+        const filenames = this.imageService.createFilenames(bike.name, 'jpg');
+        this.imageService.writeImages(bike.base64image, filenames);
+        bike.picture = filenames.picture;
+        bike.thumbnail = filenames.thumbnail;
+        return this.bikeService.add(bike)
             .then(addedBike => res.status(200).json(addedBike))
             .catch(next);
     };
