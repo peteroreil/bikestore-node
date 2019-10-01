@@ -5,14 +5,36 @@ define([
   'text!templates/header.html'
 ], ($, _, Backbone, headerTemplate) => {
     const HeaderView = Backbone.View.extend({
-        initialize: function () {
+
+        events: {
+            'click .search-bike': 'searchBike',
+            'click .navigation-menu': 'setActiveMenu'
+        },
+
+        initialize: function (params) {
+            this.bikesView = params.bikesView;
             this.el = $('#header');
             this.template = _.template(headerTemplate);
-            $(this.el).html(this.template);
         },
+
         render: function () {
             $('#header').empty();
-			$(this.el).html(this.template);
+            this.delegateEvents();
+            this.$el.html(this.template);
+            $(this.el).html(this.$el);
+        },
+
+        searchBike: function (event) {
+            event.preventDefault();
+            const searchTerm = $('input.bikeSearch').val();
+            this.bikesView.render(searchTerm);
+            $('.navigation-menu li').each((i, el) => { $(el).removeClass('active') });
+            Backbone.history.navigate('/#bikes')
+        },
+
+        setActiveMenu: function (event) {
+            $('.navigation-menu li').each((i, el) => { $(el).removeClass('active') });
+            $(event.srcElement).parent().addClass('active');
         }
     });
 

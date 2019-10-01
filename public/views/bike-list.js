@@ -11,14 +11,30 @@ define([
             this.template = _.template(bikesListTemplate);
             $(this.el).html(this.template);
         },
-        render: function () {
-            $('.container').empty();
+        render: function (searchTerm) {
+            this.$el.find('.container').empty();
             $(this.el).html(this.template);
+            this.getCollection(searchTerm, (collection) => {
+                collection.forEach((model) => {
+                    new BikeListItemView({ model }).render()
+                })
+            });
+        },
+        getCollection: function (searchTerm, callback) {
             this.collection.fetch({
                 success: (collection) => {
-                    collection.forEach(model => new BikeListItemView({ model }).render())
+                    let filteredCollection = collection;
+                    if (searchTerm) {
+                        filteredCollection = collection.filter((model) => {
+                            let lcSearchTerm = searchTerm.toLowerCase();
+                            let lcModelName = model.get('name').toLowerCase();
+                            return lcModelName.includes(lcSearchTerm);
+                        });
+                    }
+                    return callback(filteredCollection);
                 }
             });
+
         }
     });
 

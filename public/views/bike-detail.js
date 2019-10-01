@@ -2,15 +2,18 @@ define([
   'jquery',
   'underscore',
   'backbone',
-  'text!templates/bike-detail.html'
-], ($, _, Backbone, bikeDetailTemplate) => {
+  'text!templates/bike-detail.html',
+  'views/bike-list'
+], ($, _, Backbone, bikeDetailTemplate, bikeListView) => {
     const ListView = Backbone.View.extend({
         events: {
             'click .bike-edit': 'edit',
-            'submit': 'update'
+            'submit': 'update',
+            'click .bike-delete': 'delete'
         },
 
         initialize: function () {
+            Backbone.on('bikeDeleted')
             this.el = $('.container');
             this.template = _.template(bikeDetailTemplate);
             _.bindAll(this, 'render', 'renderSuccess');
@@ -52,6 +55,14 @@ define([
             this.model.save(null, {
                 success: this.render
             });
+        },
+
+        delete: function(event) {
+            event.preventDefault();
+            this.model.destroy({
+                success: () => Backbone.trigger('bikeDeleted')
+            })
+
         }
 
     });

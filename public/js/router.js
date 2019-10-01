@@ -10,6 +10,12 @@ define([
     'views/bike-detail',
     'views/bike-add'
 ], ($, _, Backbone, HeaderView, HomeView, BikeCollection, BikeListView, BikeModel, BikeDetailView, BikeAddView) => {
+
+    const bikeCollection = new BikeCollection();
+    const bikesView = new BikeListView({ collection: bikeCollection });
+	const homeView = new HomeView();
+    const headerView = new HeaderView({ bikesView });
+
     const Router = Backbone.Router.extend({
       	routes: {
             '': 'home',
@@ -19,33 +25,32 @@ define([
         },
 
 		initialize: function() {
-			const headerView = new HeaderView();
+            Backbone.on('bikeDeleted', this.bikeDeleted, this);
 			headerView.render();
 		},
 
 		home: function() {
-			const homeView = new HomeView();
 			homeView.render();
 		},
 
         listBikes: function() {
-            const bikeCollection = new BikeCollection();
-            const bikesView = new BikeListView({ collection: bikeCollection });
             bikesView.render();
         },
 
         getBike: function(bikeId) {
-            console.log('get bike called');
             const model = new BikeModel({ _id: bikeId });
             const bikeDetailView = new BikeDetailView({ model });
             bikeDetailView.render();
         },
 
         addBike: function() {
-            console.log('add bike called');
             const model = new BikeModel();
             const bikeDetailView = new BikeAddView({ model })
             bikeDetailView.render();
+        },
+
+        bikeDeleted: function () {
+            this.navigate('bikes', { trigger: true, replace: true })
         }
     });
 	return Router;
