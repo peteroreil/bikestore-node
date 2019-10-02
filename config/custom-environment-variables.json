@@ -1,0 +1,9 @@
+{
+    "server": {
+        "port": "APP_PORT"
+    },
+    "mongo": {
+        "url": "MONGO_URL",
+        "name": "MONGO_DOCUMENT"
+    }
+}

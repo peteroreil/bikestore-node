@@ -1,0 +1,6 @@
+config
+!config/custom-environment-variables.json
+.git
+README.md
+docker
+node_modules
