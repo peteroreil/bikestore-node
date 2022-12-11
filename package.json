@@ -10,7 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "config": "3.2.2",
-    "express": "4.17.1",
+    "express": "4.17.3",
     "jimp": "0.8.4",
     "mongodb": "3.3.2"
   }
